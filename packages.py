@@ -9,7 +9,7 @@ s = 0
 """
 this function is used to see if the user is following a certain account (or multiple)
 it checks the database to see if the user is a pre-existing user, if not the bot will check if the user follows a certain
-make sure to fill in the target_screen_name (line 26 and 43) in both isfollowing and isfollowingapi
+make sure to fill in the target_screen_name in both isfollowing and isfollowingapi
 pre-existing user means the user was already checked
 if this function is not necessary, remove or comment out the isfollowing and isfollowingapi functions and the function call in the retweet function
 """
@@ -23,6 +23,7 @@ def isfollowing(tweet, api):
  
     except:
         try:
+            #replace "target_screen_name" to the account that needs to be checked
             if ((api.show_friendship(source_id=tweet.user.id,target_screen_name=""))[0].following) == True:
                 return True
         except:
@@ -39,8 +40,8 @@ def isfollowingapi(tweet):
     try:
         auth = tweepy.OAuthHandler(CONSUMER_KEY_LIST_VERIFY[s], CONSUMER_SECRET_LIST_VERIFY[s])
         auth.set_access_token(ACCESS_TOKEN_LIST_VERIFY[s], ACCESS_TOKEN_SECRET_LIST_VERIFY[s])
-        api = tweepy.API(auth)            
-        
+        api = tweepy.API(auth) 
+        #replace "target_screen_name" to the account handle (@) that needs to be checked
         if ((api.show_friendship(source_id=tweet.user.id,target_screen_name=""))[0].following) == True:
             return True
 
@@ -57,16 +58,20 @@ def isfollowingapi(tweet):
 This function checks the isfollowing function to make sure the user is following a certain other user (unless removed) and retweets the tweet if the word is found the in tweet.text
 if the tweet should also be liked, "tweet.favorite()" right under tweet.retweet()
 make sure to fill in the quotes with the word that needs to be retweeted in both line 65 and 68
+copy and paste from start to end for multiple words, make sure the indentation is proper
 """
 
 def retweet(tweet, api):
     try:
         if isfollowing(tweet, api) == True:
+            #fill in the "" with the word that needs to be retweeted (should be the same as the word in main.py hash_tag_list)
+            #start
             if re.findall("", tweet.text):
                 tweet.retweet()
-                tweet.favorite()
+                #fill in the "" with the same word as above
                 db(tweet, api, "")
                 return
+            #end
 
     except BaseException as e:
             print("Error retweet (packages.py) %s" % str(e))
@@ -75,11 +80,16 @@ def retweet(tweet, api):
 This function will ignore any tweets that has the following word
 fill in the word at line 80
 remove if unnecessary (make sure to remove the function call in main.py)
+copy from start and paste is right below the end to end for multiple words, make sure the "return True" is always at last, make sure the indentation is proper
 """
 
 def mute(tweet):
+    #fill in the "" with the word that needs to be muted
+    #start
     if re.findall("", tweet.text):
         return False
+    #end
+    
     return True
     
 """
@@ -94,35 +104,44 @@ for the last command "replacethis bot block " : in the command tweet, the user t
 
 def mainuse(tweet, self):
     try:
+        #replace the "replace this" with the retweet keyword (should be the same as the word in main.py hash_tag_list, if multiple, one should be enough)
         if re.findall("replacethis bot rt this", tweet.text):
             if tweet.user.screen_name == "":
                 tweet.favorite()
                 tweet.id = tweet.in_reply_to_status_id
                 tweet.retweet()
             return
-
+        
+        #replace the "replace this" with the retweet keyword (should be the same as the word in main.py hash_tag_list, if multiple, one should be enought)
         if re.findall("replacethis bot urt this", tweet.text):
+            #replace with the main account handle
             if tweet.user.screen_name == "":
                 tweet.favorite()
                 tweet.id = tweet.in_reply_to_status_id
                 self.api.unretweet(tweet.id)
             return
-
+        
+        #replace the "replace this" with the retweet keyword (should be the same as the word in main.py hash_tag_list, if multiple, one should be enought)
         if re.findall("replacethis bot like this", tweet.text):
+            #replace with the main account handle
             if tweet.user.screen_name == "":
                 tweet.favorite()
                 tweet.id = tweet.in_reply_to_status_id
                 tweet.favorite()
             return
-
+        
+        #replace the "replace this" with the retweet keyword (should be the same as the word in main.py hash_tag_list, if multiple, one should be enought)
         if re.findall("replacethis bot unlike this", tweet.text):
+            #replace with the main account handle
             if tweet.user.screen_name == "":
                 tweet.favorite()
                 tweet.id = tweet.in_reply_to_status_id
                 self.api.destroy_favorite(tweet.id)
             return
-
+        
+        #replace the "replace this" with the retweet keyword (should be the same as the word in main.py hash_tag_list, if multiple, one should be enought)
         if re.findall("replacethis bot block ", tweet.text):
+            #replace with the main account handle
             if tweet.user.screen_name == "":
                 t = tweet.text
                 first, *middle, last = t.split()
